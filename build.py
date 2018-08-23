@@ -31,7 +31,9 @@ def __main__():
         load_file(i)
 
         track.append(Message('program_change', program=random.randint(0, 127), time=0))
+
         previous_note = None
+        #for j in tqdm(range(1000)):
         while file.length < track_length:
             note = generate_weighted(previous_note)
             track.append(note)
@@ -71,9 +73,7 @@ def generate_weighted(previous_note=None):
     time_list = []
     for key, item in data[str(note_value)]['time'].items():
         time_list += [key] * item['count']
-    time_value = int(random.choice(time_list))
-
-
+    time_value = int(random.choice(time_list)) * 2
 
     return Message('note_on', note=note_value, velocity=velocity_value, time=time_value)
 
