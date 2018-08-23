@@ -33,26 +33,21 @@ def __main__():
                     if msg is None or msg.type != 'note_on' or msg.velocity == 0:
                         continue
                     if current_note is None:
-                        if msg.channel == x:
-                            current_note = msg
-                            continue
-                    if msg.channel == x:
+                        current_note = msg
+                        continue
+                    if msg is not None:
                         next_note = msg
-                        continue
-                
-                    if current_note is None:
-                        continue
-                
-                    if not current_note.note in channel[x]:
-                        channel[x][current_note.note] = {'count' : 0, 'time' : {}, 'next' : {}}
+
+                    if current_note.note not in channel[x]:
+                        channel[x][current_note.note] = {'count': 0, 'time': {}, 'next': {}}
                     channel[x][current_note.note]['count'] += 1
                     
-                    if not current_note.time in channel[x][current_note.note]['time']:
-                        channel[x][current_note.note]['time'][current_note.time] = {'count' : 0}
+                    if current_note.time not in channel[x][current_note.note]['time']:
+                        channel[x][current_note.note]['time'][current_note.time] = {'count': 0}
                     channel[x][current_note.note]['time'][current_note.time]['count'] += 1
                         
-                    if not next_note.note in channel[x][current_note.note]['next']:
-                        channel[x][current_note.note]['next'][next_note.note] = {'count' : 0}
+                    if next_note.note not in channel[x][current_note.note]['next']:
+                        channel[x][current_note.note]['next'][next_note.note] = {'count': 0}
                     channel[x][current_note.note]['next'][next_note.note]['count'] += 1
                     
                     current_note = next_note

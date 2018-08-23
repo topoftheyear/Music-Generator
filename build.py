@@ -6,6 +6,12 @@ from mido import Message, MidiFile, MidiTrack
 from tqdm import tqdm
 
 
+# fun data to fill
+min_time            = 180   # in seconds
+max_time            = 300   # in seconds
+min_tracks          = 1     # between 1 and 16
+max_tracks          = 16    # between 1 and 16
+
 data = {}
 
 
@@ -16,24 +22,28 @@ def __main__():
     file = MidiFile(type=1)
 
     # generate tracks
-    track_length = random.randint(10, 10)
+    track_length = random.randint(min_time, max_time)
 
-    for i in tqdm(range(random.randint(1, 1))):
+    for i in tqdm(range(random.randint(min_tracks, max_tracks))):
         track = MidiTrack()
         file.tracks.append(track)
 
         load_file(i)
 
-        track.append(Message('program_change', program=12, time=0))
+        track.append(Message('program_change', program=random.randint(0, 127), time=0))
+        previous_note = None
         while file.length < track_length:
-            note = generate_weighted()
+            note = generate_weighted(previous_note)
             track.append(note)
-            #track.append(Message('note_off', note=64, velocity=127, time=1))
+            track.append(Message('note_off', note=64, velocity=127, time=0))
+            previous_note = note
 
     name = randomwordgenerator.generate_random_words(random.randint(1, 3))
     if type(name) is list:
         name = ' '.join(name)
     file.save('created_music/' + name + '.mid')
+
+    winsound.PlaySound('sounds/oh no.wav', winsound.SND_ALIAS)
 
 
 def load_file(number):
@@ -52,11 +62,16 @@ def generate_weighted(previous_note=None):
         for key, item in data.items():
             note_list += [key] * item['count']
         note_value = int(random.choice(note_list))
+    else:
+        note_list = []
+        for key, item in data[str(previous_note.note)]['next'].items():
+            note_list += [key] * item['count']
+        note_value = int(random.choice(note_list))
 
-        time_list = []
-        for key, item in data[str(note_value)]['time'].items():
-            time_list += [key] * item['count']
-        time_value = int(random.choice(time_list))
+    time_list = []
+    for key, item in data[str(note_value)]['time'].items():
+        time_list += [key] * item['count']
+    time_value = int(random.choice(time_list))
 
 
 
