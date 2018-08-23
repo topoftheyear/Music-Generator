@@ -1,0 +1,5 @@
+mido
+tqdm
+pypandoc
+requests
+randomwordgenerator
