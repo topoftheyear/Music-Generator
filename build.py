@@ -10,7 +10,7 @@ from tqdm import tqdm
 min_time            = 180   # in seconds
 max_time            = 300   # in seconds
 min_tracks          = 1     # between 1 and 16
-max_tracks          = 16    # between 1 and 16
+max_tracks          = 4    # between 1 and 16
 
 data = {}
 
@@ -23,22 +23,29 @@ def __main__():
 
     # generate tracks
     track_length = random.randint(min_time, max_time)
-
+    steps = 0
     for i in tqdm(range(random.randint(min_tracks, max_tracks))):
         track = MidiTrack()
         file.tracks.append(track)
 
         load_file(i)
 
-        track.append(Message('program_change', program=random.randint(0, 127), time=0))
+        track.append(Message('program_change', program=114, time=0))
 
         previous_note = None
-        #for j in tqdm(range(1000)):
-        while file.length < track_length:
-            note = generate_weighted(previous_note)
-            track.append(note)
-            track.append(Message('note_off', note=64, velocity=127, time=0))
-            previous_note = note
+        if i == 1:
+            while file.length < track_length:
+                steps += 1
+                note = generate_weighted(previous_note)
+                track.append(note)
+                track.append(Message('note_off', note=64, velocity=127, time=0))
+                previous_note = note
+        else:
+            for j in range(steps):
+                note = generate_weighted(previous_note)
+                track.append(note)
+                track.append(Message('note_off', note=64, velocity=127, time=0))
+                previous_note = note
 
     name = randomwordgenerator.generate_random_words(random.randint(1, 3))
     if type(name) is list:

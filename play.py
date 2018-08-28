@@ -7,7 +7,7 @@ def __main__():
         notes = input()
         if notes == '':
             break;
-        msg = mido.Message('note_on', note=int(notes))
+        msg = mido.Message('note_on', note=int(notes), time=0)
         port.send(msg)
         
 

@@ -3,3 +3,5 @@ tqdm
 pypandoc
 requests
 randomwordgenerator
+tensorflow
+tflearn
